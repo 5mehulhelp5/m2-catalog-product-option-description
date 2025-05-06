@@ -46,7 +46,7 @@ class CustomOptions
         \Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\CustomOptions $subject,
         array $meta
     ): array {
-        return $this->arrays->addDeepValue(
+        $meta = $this->arrays->addDeepValue(
             $meta,
             [
                 \Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\CustomOptions::GROUP_CUSTOM_OPTIONS_NAME,
@@ -62,6 +62,26 @@ class CustomOptions
                 static::FIELD_SHORT_DESCRIPTION_NAME
             ],
             $this->getShortDescriptionFieldConfig(25)
+        );
+
+        return $this->arrays->addDeepValue(
+            $meta,
+            [
+                \Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\CustomOptions::GROUP_CUSTOM_OPTIONS_NAME,
+                'children',
+                \Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\CustomOptions::GRID_OPTIONS_NAME,
+                'children',
+                'record',
+                'children',
+                \Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\CustomOptions::CONTAINER_OPTION,
+                'children',
+                \Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\CustomOptions::GRID_TYPE_SELECT_NAME,
+                'children',
+                'record',
+                'children',
+                static::FIELD_SHORT_DESCRIPTION_NAME
+            ],
+            $this->getShortDescriptionFieldConfig(15)
         );
     }
 

@@ -73,11 +73,25 @@ class Description extends Template
         }
 
         /** @var Option $option */
-        foreach ($this->getProduct()->getProductOptionsCollection() as $option) {
+        foreach ($this->getProduct()->getOptions() as $option) {
             $optionShortDescription = $option->getData('short_description');
 
             if (! $this->variables->isEmpty($optionShortDescription)) {
-                $config[ 'options' ][ $option->getId() ] = $optionShortDescription;
+                $config[ 'options' ][ $option->getId() ][ 'description' ] = $optionShortDescription;
+            }
+
+            $optionValues = $option->getValues();
+
+            if ($optionValues) {
+                /** @var Option\Value $optionValue */
+                foreach ($optionValues as $optionValue) {
+                    $optionValueShortDescription = $optionValue->getData('short_description');
+
+                    if (! $this->variables->isEmpty($optionValueShortDescription)) {
+                        $config[ 'options' ][ $option->getId() ][ 'values' ][ $optionValue->getId() ][ 'description' ] =
+                            $optionValueShortDescription;
+                    }
+                }
             }
         }
 

@@ -64,4 +64,57 @@ class Data
             true
         );
     }
+
+    public function addValueShortDescriptionToResult(
+        \Magento\Catalog\Model\ResourceModel\Product\Option\Value\Collection $collection,
+        $storeId
+    ): void {
+        if ($collection->isLoaded() || $collection->hasFlag('short_description')) {
+            return;
+        }
+
+        $dbAdapter = $collection->getConnection();
+
+        $tableName = $dbAdapter->getTableName('catalog_product_option_type_short_desc');
+
+        $select = $collection->getSelect();
+
+        $select->joinLeft(
+            ['default_option_value_short_desc' => $tableName],
+            sprintf(
+                'default_option_value_short_desc.option_type_id = main_table.option_type_id AND %s',
+                $dbAdapter->quoteInto(
+                    'default_option_value_short_desc.store_id = ?',
+                    Store::DEFAULT_STORE_ID
+                )
+            ),
+            ['default_short_description' => 'short_description']
+        );
+
+        $shortDescriptionExpr = $dbAdapter->getCheckSql(
+            'store_option_value_short_desc.short_description IS NULL',
+            'default_option_value_short_desc.short_description',
+            'store_option_value_short_desc.short_description'
+        );
+
+        $select->joinLeft(
+            ['store_option_value_short_desc' => $tableName],
+            sprintf(
+                'store_option_value_short_desc.option_type_id = main_table.option_type_id AND %s',
+                $dbAdapter->quoteInto(
+                    'store_option_value_short_desc.store_id = ?',
+                    $storeId
+                )
+            ),
+            [
+                'store_short_description' => 'short_description',
+                'short_description'       => $shortDescriptionExpr
+            ]
+        );
+
+        $collection->setFlag(
+            'short_description',
+            true
+        );
+    }
 }
