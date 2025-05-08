@@ -46,7 +46,7 @@ define([
 
                     var optionId = optionWrapper.data('option-id');
 
-                    if (optionId && self.options.descriptions.options[optionId]) {
+                    if (optionId && self.options.descriptions.options && self.options.descriptions.options[optionId]) {
                         var optionData = self.options.descriptions.options[optionId];
 
                         if (optionData && optionData.values) {
